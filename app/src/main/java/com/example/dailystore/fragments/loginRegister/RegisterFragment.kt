@@ -5,14 +5,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.dailystore.data.User
 import com.example.dailystore.databinding.FragmentRegisterBinding
+import com.example.dailystore.utils.RegisterValidation
 import com.example.dailystore.utils.Resource
 import com.example.dailystore.viewmodels.RegisterViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class RegisterFragment : Fragment() {
@@ -49,15 +54,40 @@ class RegisterFragment : Fragment() {
             viewmodel.register.collect {
                 when(it) {
                     is Resource.Loading -> {
+                        Toast.makeText(requireContext(), "loading..", Toast.LENGTH_SHORT).show()
                         Log.d("TAG", "onViewCreated: loading")
                     }
                     is Resource.Error -> {
+                        Toast.makeText(requireContext(), "Account not crated", Toast.LENGTH_SHORT).show()
                         Log.d("TAG", "onViewCreated: loading")
                     }
                     is Resource.Success -> {
+                        Toast.makeText(requireContext(), "account created successfully", Toast.LENGTH_SHORT).show()
                         Log.d("TAG", "onViewCreated: loading")
                     }
                     else -> Unit
+                }
+            }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            viewmodel.validation.collect {validation ->
+                if(validation.email is RegisterValidation.Failed) {
+                    withContext(Dispatchers.Main) {
+                        binding.edEmail.apply {
+                            requestFocus()
+                            error = validation.email.message
+                        }
+                    }
+                }
+
+                if(validation.password is RegisterValidation.Failed) {
+                    withContext(Dispatchers.Main) {
+                        binding.edEmail.apply {
+                            requestFocus()
+                            error = validation.password.message
+                        }
+                    }
                 }
             }
         }

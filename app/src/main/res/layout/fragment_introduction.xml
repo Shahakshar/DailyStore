@@ -112,7 +112,6 @@
         android:background="@drawable/btn_background"
         android:fontFamily="@font/poppins_thin"
         android:text="start"
-        android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="@dimen/_12sdp"
         app:layout_constraintBottom_toBottomOf="parent"
