@@ -141,41 +141,41 @@
 
 
 
-    <ImageView
-        android:id="@+id/btn_facebook"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:src="@drawable/ic_facebook_login"
-        app:layout_constraintStart_toStartOf="@id/guideline1"
-        app:layout_constraintTop_toBottomOf="@id/btn_register" />
+<!--    <ImageView-->
+<!--        android:id="@+id/btn_facebook"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="@dimen/_10sdp"-->
+<!--        android:src="@drawable/ic_facebook_login"-->
+<!--        app:layout_constraintStart_toStartOf="@id/guideline1"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/btn_register" />-->
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/g_facebook"
-        app:layout_constraintBottom_toBottomOf="@id/btn_facebook"
-        app:layout_constraintEnd_toEndOf="@id/btn_facebook"
-        app:layout_constraintStart_toStartOf="@id/btn_facebook"
-        app:layout_constraintTop_toTopOf="@id/btn_facebook" />
+<!--    <TextView-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="@string/g_facebook"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/btn_facebook"-->
+<!--        app:layout_constraintEnd_toEndOf="@id/btn_facebook"-->
+<!--        app:layout_constraintStart_toStartOf="@id/btn_facebook"-->
+<!--        app:layout_constraintTop_toTopOf="@id/btn_facebook" />-->
 
-    <ImageView
-        android:id="@+id/btn_google"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:src="@drawable/ic_google_login"
-        app:layout_constraintEnd_toEndOf="@id/guideline2"
-        app:layout_constraintTop_toBottomOf="@id/btn_register" />
+<!--    <ImageView-->
+<!--        android:id="@+id/btn_google"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="@dimen/_10sdp"-->
+<!--        android:src="@drawable/ic_google_login"-->
+<!--        app:layout_constraintEnd_toEndOf="@id/guideline2"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/btn_register" />-->
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/g_google"
-        app:layout_constraintBottom_toBottomOf="@id/btn_google"
-        app:layout_constraintEnd_toEndOf="@id/btn_google"
-        app:layout_constraintStart_toStartOf="@id/btn_google"
-        app:layout_constraintTop_toTopOf="@id/btn_google" />
+<!--    <TextView-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="@string/g_google"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/btn_google"-->
+<!--        app:layout_constraintEnd_toEndOf="@id/btn_google"-->
+<!--        app:layout_constraintStart_toStartOf="@id/btn_google"-->
+<!--        app:layout_constraintTop_toTopOf="@id/btn_google" />-->
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline1"
