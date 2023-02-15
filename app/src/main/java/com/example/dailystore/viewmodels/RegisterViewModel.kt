@@ -5,7 +5,6 @@ import com.example.dailystore.data.User
 import com.example.dailystore.utils.*
 import com.example.dailystore.utils.Constants.USER_COLLECTION
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -25,7 +24,7 @@ class RegisterViewModel @Inject constructor(
         val register : Flow<Resource<User>> = _register
 
         private val _validation = Channel<RegisterFieldState>()
-    val validation = _validation.receiveAsFlow()
+        val validation = _validation.receiveAsFlow()
 
         fun crateAccountWithEmailAndPassword(user: User, password: String) {
 
@@ -36,10 +35,8 @@ class RegisterViewModel @Inject constructor(
                 }
                 firebaseAuth.createUserWithEmailAndPassword(user.email, password)
                     .addOnSuccessListener {
-                        it.user?.let {
-                            saveUserInfo(it.uid, user)
-//                            _register.value = Resource.Success(it)
-
+                        it.user?.let { fireUser ->
+                            saveUserInfo(fireUser.uid, user)
                         }
                     }
                     .addOnFailureListener {
@@ -47,7 +44,8 @@ class RegisterViewModel @Inject constructor(
                     }
             } else {
                 val registerFieldState = RegisterFieldState(
-                    validateEmail(user.email), validationPassword(password)
+                    validateEmail(user.email),
+                    validationPassword(password)
                 )
 
                 runBlocking {
@@ -68,6 +66,10 @@ class RegisterViewModel @Inject constructor(
             }
     }
 
+
+    /**
+     * users enter details are right or wrong is checked by this function
+     * */
     private fun checkValidation(user: User, password: String): Boolean {
         val emailValidation = validateEmail(user.email)
         val passwordValidation = validationPassword(password)

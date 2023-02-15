@@ -10,15 +10,22 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.dailystore.R
 import com.example.dailystore.activities.ShoppingActivity
 import com.example.dailystore.data.User
 import com.example.dailystore.databinding.FragmentLoginBinding
 import com.example.dailystore.databinding.FragmentRegisterBinding
+import com.example.dailystore.dialog.setupBottomSheetDialog
+import com.example.dailystore.utils.RegisterValidation
 import com.example.dailystore.utils.Resource
 import com.example.dailystore.viewmodels.LoginViewModel
 import com.example.dailystore.viewmodels.RegisterViewModel
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
@@ -48,6 +55,34 @@ class LoginFragment : Fragment() {
             }
         }
 
+        binding.tvDontHaveAnAccount.setOnClickListener {
+            findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
+        }
+
+        binding.tvForgotPassword.setOnClickListener {
+            setupBottomSheetDialog { email ->
+                viewmodel.resetPassword(email)
+            }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            viewmodel.resetPassword.collect{
+                when(it) {
+                    is Resource.Loading -> {
+                        Toast.makeText(requireContext(), "loading..", Toast.LENGTH_SHORT).show()
+                        Log.d("TAG", "onViewCreated: loading")
+                    }
+                    is Resource.Error -> {
+                        Snackbar.make(requireView(), "error ${it.message}", Snackbar.LENGTH_LONG).show()
+                    }
+                    is Resource.Success -> {
+                        Snackbar.make(requireView(), "reset link was sent to your email", Snackbar.LENGTH_LONG).show()
+                    }
+                    else -> Unit
+                }
+            }
+        }
+
         lifecycleScope.launchWhenStarted {
             viewmodel.login.collect {
                 when(it) {
@@ -60,17 +95,37 @@ class LoginFragment : Fragment() {
                         Log.d("TAG", "onViewCreated: loading")
                     }
                     is Resource.Success -> {
-                        Intent(requireContext(), ShoppingActivity::class.java).also {intent ->
-
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                            startActivity(intent)
-                        }
+                        val intent = Intent(activity,ShoppingActivity::class.java)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(intent)
                     }
                     else -> Unit
                 }
             }
         }
 
+
+        lifecycleScope.launchWhenStarted {
+            viewmodel.validation.collect{validation ->
+                if(validation.email is RegisterValidation.Failed) {
+                    withContext(Dispatchers.Main) {
+                        binding.edEmailLogin.apply {
+                            requestFocus()
+                            error = validation.email.message
+                        }
+                    }
+                }
+
+                if(validation.password is RegisterValidation.Failed) {
+                    withContext(Dispatchers.Main) {
+                        binding.edPasswordLogin.apply {
+                            requestFocus()
+                            error = validation.password.message
+                        }
+                    }
+                }
+            }
+        }
     }
 
 

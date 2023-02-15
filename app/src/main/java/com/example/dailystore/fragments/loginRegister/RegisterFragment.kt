@@ -9,6 +9,8 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import com.example.dailystore.R
 import com.example.dailystore.data.User
 import com.example.dailystore.databinding.FragmentRegisterBinding
 import com.example.dailystore.utils.RegisterValidation
@@ -16,7 +18,6 @@ import com.example.dailystore.utils.Resource
 import com.example.dailystore.viewmodels.RegisterViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
@@ -45,10 +46,14 @@ class RegisterFragment : Fragment() {
                     edEmail.text.toString().trim()
                 )
                 val password = edPassword.text.toString()
-
                 viewmodel.crateAccountWithEmailAndPassword(user, password)
             }
         }
+
+        binding.tvAlreadyHaveAccount.setOnClickListener {
+            findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
+        }
+
 
         lifecycleScope.launchWhenStarted {
             viewmodel.register.collect {
@@ -58,10 +63,11 @@ class RegisterFragment : Fragment() {
                         Log.d("TAG", "onViewCreated: loading")
                     }
                     is Resource.Error -> {
-                        Toast.makeText(requireContext(), "Account not crated", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "account already exist", Toast.LENGTH_SHORT).show()
                         Log.d("TAG", "onViewCreated: loading")
                     }
                     is Resource.Success -> {
+                        findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
                         Toast.makeText(requireContext(), "account created successfully", Toast.LENGTH_SHORT).show()
                         Log.d("TAG", "onViewCreated: loading")
                     }
@@ -71,7 +77,7 @@ class RegisterFragment : Fragment() {
         }
 
         lifecycleScope.launchWhenStarted {
-            viewmodel.validation.collect {validation ->
+            viewmodel.validation.collect { validation ->
                 if(validation.email is RegisterValidation.Failed) {
                     withContext(Dispatchers.Main) {
                         binding.edEmail.apply {
@@ -81,9 +87,9 @@ class RegisterFragment : Fragment() {
                     }
                 }
 
-                if(validation.password is RegisterValidation.Failed) {
+                if (validation.password is RegisterValidation.Failed) {
                     withContext(Dispatchers.Main) {
-                        binding.edEmail.apply {
+                        binding.edPassword.apply {
                             requestFocus()
                             error = validation.password.message
                         }
@@ -92,5 +98,4 @@ class RegisterFragment : Fragment() {
             }
         }
     }
-
 }
