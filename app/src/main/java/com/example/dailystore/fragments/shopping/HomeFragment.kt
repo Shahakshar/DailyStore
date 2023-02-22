@@ -7,9 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.GridLayout
 import android.widget.Toast
+import androidx.core.view.ViewCompat.NestedScrollType
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dailystore.R
@@ -46,6 +49,21 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
         setUpSpecialProductsRv()
         setUpBestProductsRv()
 
+        // clicking on the product and go to details screen
+        specialProductsAdapter.onClick = {
+            val b = Bundle().apply {
+                putParcelable("product", it)
+            }
+            findNavController().navigate(R.id.action_homeFragment_to_productDetailsFragment, b)
+        }
+
+        bestProductsAdapter.onClick = {
+            val b = Bundle().apply {
+                putParcelable("product", it)
+            }
+            findNavController().navigate(R.id.action_homeFragment_to_productDetailsFragment, b)
+        }
+
         lifecycleScope.launchWhenStarted {
             viewModel.specialProduct.collectLatest {
                 when(it) {
@@ -70,21 +88,27 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
             viewModel.bestProduct.collectLatest {
                 when(it) {
                     is Resource.Loading -> {
-                        showLoading()
+                        binding.bestProductProgressBar.visibility = View.VISIBLE
                     }
                     is Resource.Error -> {
-                        hideLoading()
                         Log.e("TAG", it.message.toString())
                         Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                        binding.bestProductProgressBar.visibility = View.VISIBLE
                     }
                     is Resource.Success -> {
                         bestProductsAdapter.differ.submitList(it.data)
-                        hideLoading()
+                        binding.bestProductProgressBar.visibility = View.GONE
                     }
                     else -> Unit
                 }
             }
         }
+
+        binding.nestedScrollMainCategory.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, _, scrollY, _, _ ->
+            if(v.getChildAt(0).bottom <= v.height + scrollY) {
+                viewModel.fetchBestProduct()
+            }
+        })
     }
 
     private fun setUpBestProductsRv() {

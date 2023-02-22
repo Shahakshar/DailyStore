@@ -48,6 +48,4 @@ class IntroductionViewModel @Inject constructor(
         sharedPreferences.edit().putBoolean(INTRODUCTION_KEY, true).apply()
     }
 
-
 }
-
