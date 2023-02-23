@@ -3,8 +3,10 @@ package com.example.dailystore.di
 import android.app.Application
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import com.example.dailystore.firebase.FirebaseCommon
 import com.example.dailystore.utils.Constants.INTRODUCTION_SP
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import dagger.Module
@@ -32,5 +34,13 @@ object AppModule {
         return application.getSharedPreferences(INTRODUCTION_SP, MODE_PRIVATE)
     }
 
+    @Provides
+    @Singleton
+    fun provideFirebaseCommon(
+        firestore: FirebaseFirestore,
+        firebaseAuth: FirebaseAuth
+    ): FirebaseCommon {
+        return FirebaseCommon(firestore, firebaseAuth)
+    }
 
 }

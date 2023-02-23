@@ -18,7 +18,6 @@ class HomeCategoryViewModel @Inject constructor(
 ) : ViewModel() {
 
     // asStateFlow() and StateFlow<> both are same just type casting
-
     private val _specialProduct = MutableStateFlow<Resource<List<Product>>>(Resource.Unspecified())
     val specialProduct = _specialProduct.asStateFlow()
 

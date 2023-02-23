@@ -20,6 +20,7 @@ import com.example.dailystore.adapter.BestProductsAdapter
 import com.example.dailystore.adapter.SpecialProductsAdapter
 import com.example.dailystore.databinding.FragmentHomeBinding
 import com.example.dailystore.utils.Resource
+import com.example.dailystore.utils.showBottomNavigationView
 import com.example.dailystore.viewmodels.HomeCategoryViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -133,5 +134,11 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = specialProductsAdapter
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        showBottomNavigationView()
     }
 }
