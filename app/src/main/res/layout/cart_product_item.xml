@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/g_white"
+    android:background="@color/g_card_background"
     app:cardElevation="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -49,7 +49,7 @@
             android:layout_width="180dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins_light"
-            android:text="1500"
+            android:text="₹1500"
             android:textColor="@color/black"
             android:textSize="15sp"
             android:textStyle="bold"
@@ -58,8 +58,8 @@
 
         <ImageView
             android:id="@+id/imagePlus"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_marginEnd="1dp"
             android:layout_marginBottom="5dp"
             android:src="@drawable/ic_plus"
@@ -69,8 +69,8 @@
 
         <ImageView
             android:id="@+id/imageMinus"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:src="@drawable/ic_minus"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="1dp"

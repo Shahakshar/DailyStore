@@ -9,8 +9,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,10 +23,36 @@ class CartViewModel @Inject constructor(
     private val _cartProduct = MutableStateFlow<Resource<List<CartProduct>>>(Resource.Unspecified())
     val cartProduct = _cartProduct.asStateFlow()
 
+    val productPrice = cartProduct.map {
+        when(it) {
+            is Resource.Success -> {
+                calculatePrice(it.data!!)
+            }
+            else -> null
+        }
+    }
+
+    private val _deleteDialog = MutableSharedFlow<CartProduct>()
+    val deleteDialog = _deleteDialog.asSharedFlow()
+
+    private fun calculatePrice(data: List<CartProduct>): Float? {
+        return data.sumByDouble { cartProduct ->
+            (cartProduct.product.price * cartProduct.quantity).toDouble()
+        }.toFloat()
+    }
+
     private var cartProductDocuments = emptyList<DocumentSnapshot>()
 
     init {
         getCartProduct()
+    }
+
+    fun deleteCartProduct(cartProducts: CartProduct) {
+        val index = cartProduct.value.data?.indexOf(cartProducts)
+        if(index != null && index != -1) {
+            val documentId = cartProductDocuments[index].id
+            firestore.collection("user").document(auth.uid!!).collection("cart").document(documentId).delete()
+        }
     }
 
     private fun getCartProduct() {
@@ -62,9 +87,15 @@ class CartViewModel @Inject constructor(
 
             when(quantityChanging) {
                 FirebaseCommon.QuantityChanging.INCREASE -> {
+                    viewModelScope.launch { _cartProduct.emit(Resource.Loading()) }
                     increaseQuantity(documentId)
                 }
                 FirebaseCommon.QuantityChanging.DECREASE -> {
+                    if(cartProducts.quantity == 1){
+                        viewModelScope.launch { _deleteDialog.emit(cartProducts) }
+                        return
+                    }
+                    viewModelScope.launch { _cartProduct.emit(Resource.Loading()) }
                     decreaseQuantity(documentId)
                 }
             }

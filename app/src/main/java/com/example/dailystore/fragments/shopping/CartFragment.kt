@@ -1,5 +1,6 @@
 package com.example.dailystore.fragments.shopping
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,14 +9,15 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dailystore.R
 import com.example.dailystore.adapter.CartProductAdapter
 import com.example.dailystore.databinding.FragmentCartBinding
+import com.example.dailystore.firebase.FirebaseCommon
 import com.example.dailystore.utils.Resource
 import com.example.dailystore.utils.VerticalItemDecoration
 import com.example.dailystore.viewmodels.CartViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 
 class CartFragment: Fragment(R.layout.fragment_cart) {
@@ -40,14 +42,37 @@ class CartFragment: Fragment(R.layout.fragment_cart) {
 
         setUpCartRv()
 
+        cartAdapter.onProductClick = {
+            val b = Bundle().apply {
+                putParcelable("product", it.product)
+            }
+            findNavController().navigate(R.id.action_cartFragment_to_productDetailsFragment, b)
+        }
+
+        cartAdapter.onPlusClick = {
+            viewModel.changeQuantity(it, FirebaseCommon.QuantityChanging.INCREASE)
+        }
+
+        cartAdapter.onMinusClick = {
+            viewModel.changeQuantity(it, FirebaseCommon.QuantityChanging.DECREASE)
+        }
+
+        lifecycleScope.launchWhenStarted {
+            viewModel.productPrice.collectLatest { price ->
+                price?.let {
+                    binding.tvTotalPrice.text = "₹$price"
+                }
+            }
+        }
+
         lifecycleScope.launchWhenCreated {
             viewModel.cartProduct.collectLatest {
                 when(it) {
                     is Resource.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
+                        binding.progressPlusMinus.visibility = View.VISIBLE
                     }
                     is Resource.Success -> {
-                        binding.progressBar.visibility = View.INVISIBLE
+                        binding.progressPlusMinus.visibility = View.INVISIBLE
                         if(it.data!!.isEmpty()) {
                             showEmptyCart()
                             hideOtherView()
@@ -58,11 +83,33 @@ class CartFragment: Fragment(R.layout.fragment_cart) {
                         }
                     }
                     is Resource.Error -> {
-                        binding.progressBar.visibility = View.INVISIBLE
+                        binding.progressPlusMinus.visibility = View.INVISIBLE
                         Toast.makeText(requireContext(), "${it.message}", Toast.LENGTH_SHORT).show()
                     }
                     else -> Unit
                 }
+            }
+        }
+
+        binding.imgCloseCart.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
+        lifecycleScope.launchWhenStarted {
+            viewModel.deleteDialog.collectLatest {
+                val alertDialog = AlertDialog.Builder(requireContext()).apply {
+                    setTitle("Delete item from cart")
+                    setMessage("Do you want to delete this item from your cart?")
+                    setNegativeButton("Cancel") { dialog,_ ->
+                        dialog.dismiss()
+                    }
+                    setPositiveButton("Yes") { dialog,_ ->
+                        dialog.dismiss()
+                        viewModel.deleteCartProduct(it)
+                    }
+                }
+                alertDialog.create()
+                alertDialog.show()
             }
         }
     }

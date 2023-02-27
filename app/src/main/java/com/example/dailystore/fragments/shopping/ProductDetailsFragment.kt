@@ -1,6 +1,7 @@
 package com.example.dailystore.fragments.shopping
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,6 +46,7 @@ class ProductDetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val product = args.product
+
         setUpViewPager()
         binding.apply {
             tvProductName.text = product.name

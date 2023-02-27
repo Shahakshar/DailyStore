@@ -1,11 +1,13 @@
 package com.example.dailystore.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dailystore.data.CartProduct
 import com.example.dailystore.firebase.FirebaseCommon
 import com.example.dailystore.utils.Resource
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,16 +27,18 @@ class DetailViewModel @Inject constructor(
 
     fun addUpdateProductInCart(cartProduct: CartProduct) {
         viewModelScope.launch { _addToCart.emit(Resource.Loading()) }
-        firestore.collection("user").document(auth.uid!!).collection("cart").whereEqualTo("product.id", cartProduct.product.id).get()
+        firestore.collection("user").document(auth.uid!!).collection("cart")
+            .whereEqualTo("product.id", cartProduct.product.id).get()
             .addOnSuccessListener {
                 it.documents.let {
-                    if(it.isEmpty()) { // add new product
+                    if (it.isEmpty()) { // add new product
                         addNewProduct(cartProduct)
                     } else {
                         val product = it.first().toObject(CartProduct::class.java)
-                        if(product == cartProduct) { // Increase quantity
-                            val documentId = it.first().id
-                            increaseQuantity(documentId = documentId, cartProduct)
+
+                        if (product?.product == cartProduct.product) {
+                            // not increment in product
+                            addNewProduct(cartProduct)
                         } else { // add new product
                             addNewProduct(cartProduct)
                         }
@@ -49,7 +53,7 @@ class DetailViewModel @Inject constructor(
     private fun addNewProduct(cartProduct: CartProduct) {
         firebaseCommon.addProductToCart(cartProduct) { addProduct, e ->
             viewModelScope.launch {
-                if(e == null) {
+                if (e == null) {
                     _addToCart.emit(Resource.Success(addProduct!!))
                 } else {
                     _addToCart.emit(Resource.Error(e.message.toString()))
@@ -61,7 +65,7 @@ class DetailViewModel @Inject constructor(
     private fun increaseQuantity(documentId: String, cartProduct: CartProduct) {
         firebaseCommon.increaseQuantity(documentId) { _, e ->
             viewModelScope.launch {
-                if(e == null) {
+                if (e == null) {
                     _addToCart.emit(Resource.Success(cartProduct))
                 } else {
                     _addToCart.emit(Resource.Error(e.message.toString()))

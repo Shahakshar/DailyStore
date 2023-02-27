@@ -24,6 +24,7 @@ class CartProductAdapter :
                     append(cartProduct.product.price)
                 }
                 tvProductCartName.text = cartProduct.product.name
+                tvCartProductQuantity.text = cartProduct.quantity.toString()
             }
         }
     }
