@@ -17,9 +17,12 @@ import com.example.dailystore.databinding.FragmentCartBinding
 import com.example.dailystore.firebase.FirebaseCommon
 import com.example.dailystore.utils.Resource
 import com.example.dailystore.utils.VerticalItemDecoration
+import com.example.dailystore.utils.showBottomNavigationView
 import com.example.dailystore.viewmodels.CartViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 
+@AndroidEntryPoint
 class CartFragment: Fragment(R.layout.fragment_cart) {
 
     private lateinit var binding: FragmentCartBinding
@@ -49,20 +52,27 @@ class CartFragment: Fragment(R.layout.fragment_cart) {
             findNavController().navigate(R.id.action_cartFragment_to_productDetailsFragment, b)
         }
 
+        var  totalPrice = 0f
+        lifecycleScope.launchWhenStarted {
+            viewModel.productPrice.collectLatest { price ->
+                price?.let {
+                    totalPrice = it
+                    binding.tvTotalPrice.text = "₹ $price"
+                }
+            }
+        }
+
+        binding.btnCheckout.setOnClickListener {
+            val action = CartFragmentDirections.actionCartFragmentToBillingFragment(totalPrice, cartAdapter.differ.currentList.toTypedArray())
+            findNavController().navigate(action)
+        }
+
         cartAdapter.onPlusClick = {
             viewModel.changeQuantity(it, FirebaseCommon.QuantityChanging.INCREASE)
         }
 
         cartAdapter.onMinusClick = {
             viewModel.changeQuantity(it, FirebaseCommon.QuantityChanging.DECREASE)
-        }
-
-        lifecycleScope.launchWhenStarted {
-            viewModel.productPrice.collectLatest { price ->
-                price?.let {
-                    binding.tvTotalPrice.text = "₹$price"
-                }
-            }
         }
 
         lifecycleScope.launchWhenCreated {
@@ -150,4 +160,8 @@ class CartFragment: Fragment(R.layout.fragment_cart) {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        showBottomNavigationView()
+    }
 }

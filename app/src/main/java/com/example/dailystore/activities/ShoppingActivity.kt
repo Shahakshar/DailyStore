@@ -16,6 +16,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.flow.collectLatest
+import kotlin.time.milliseconds
 
 @AndroidEntryPoint
 class ShoppingActivity : AppCompatActivity() {
@@ -38,10 +39,15 @@ class ShoppingActivity : AppCompatActivity() {
                 when(it) {
                     is Resource.Success -> {
                         val count = it.data?.size ?: 0
-                        val bottomNavigation  =findViewById<BottomNavigationView>(R.id.bottomNavigation)
-                        bottomNavigation.getOrCreateBadge(R.id.cartFragment).apply {
-                            number = count
-                            backgroundColor = resources.getColor(R.color.g_blue)
+                        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
+                        var badge = bottomNavigation.getOrCreateBadge(R.id.cartFragment)
+                        if(count > 0) {
+                            badge.apply {
+                                number = count
+                                backgroundColor = resources.getColor(R.color.g_blue)
+                            }
+                        } else {
+                            badge.isVisible = false
                         }
                     }
                     else -> Unit

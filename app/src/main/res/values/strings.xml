@@ -63,7 +63,7 @@
     <string name="g_categories">Categories</string>
     <string name="g_cancel">Cancel</string>
     <string name="g_payment_methods">Payment methods</string>
-    <string name="payment_explanation">Currently Keline only supports payments when receiving the product, more options are coming soon.</string>
+    <string name="payment_explanation">Currently DailyStore only supports payments when receiving the product, more options are coming soon.</string>
     <string name="g_shipping">Shipping</string>
     <string name="g_full_name">Full Name</string>
     <string name="g_city">City</string>
