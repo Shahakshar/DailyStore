@@ -29,7 +29,7 @@ class CartFragment: Fragment(R.layout.fragment_cart) {
     private val cartAdapter by lazy {
         CartProductAdapter()
     }
-    private val viewModel by activityViewModels<CartViewModel>()
+    private val cartViewModel by activityViewModels<CartViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,7 +54,7 @@ class CartFragment: Fragment(R.layout.fragment_cart) {
 
         var  totalPrice = 0f
         lifecycleScope.launchWhenStarted {
-            viewModel.productPrice.collectLatest { price ->
+            cartViewModel.productPrice.collectLatest { price ->
                 price?.let {
                     totalPrice = it
                     binding.tvTotalPrice.text = "₹ $price"
@@ -68,15 +68,15 @@ class CartFragment: Fragment(R.layout.fragment_cart) {
         }
 
         cartAdapter.onPlusClick = {
-            viewModel.changeQuantity(it, FirebaseCommon.QuantityChanging.INCREASE)
+            cartViewModel.changeQuantity(it, FirebaseCommon.QuantityChanging.INCREASE)
         }
 
         cartAdapter.onMinusClick = {
-            viewModel.changeQuantity(it, FirebaseCommon.QuantityChanging.DECREASE)
+            cartViewModel.changeQuantity(it, FirebaseCommon.QuantityChanging.DECREASE)
         }
 
         lifecycleScope.launchWhenCreated {
-            viewModel.cartProduct.collectLatest {
+            cartViewModel.cartProduct.collectLatest {
                 when(it) {
                     is Resource.Loading -> {
                         binding.progressPlusMinus.visibility = View.VISIBLE
@@ -106,7 +106,7 @@ class CartFragment: Fragment(R.layout.fragment_cart) {
         }
 
         lifecycleScope.launchWhenStarted {
-            viewModel.deleteDialog.collectLatest {
+            cartViewModel.deleteDialog.collectLatest {
                 val alertDialog = AlertDialog.Builder(requireContext()).apply {
                     setTitle("Delete item from cart")
                     setMessage("Do you want to delete this item from your cart?")
@@ -115,7 +115,7 @@ class CartFragment: Fragment(R.layout.fragment_cart) {
                     }
                     setPositiveButton("Yes") { dialog,_ ->
                         dialog.dismiss()
-                        viewModel.deleteCartProduct(it)
+                        cartViewModel.deleteCartProduct(it)
                     }
                 }
                 alertDialog.create()

@@ -25,7 +25,7 @@ class ShoppingActivity : AppCompatActivity() {
         ActivityShoppingBinding.inflate(layoutInflater)
     }
 
-    val viewModel by viewModels<CartViewModel>()
+    val cartViewModel by viewModels<CartViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,13 +35,14 @@ class ShoppingActivity : AppCompatActivity() {
         binding.bottomNavigation.setupWithNavController(navController)
 
         lifecycleScope.launchWhenStarted {
-            viewModel.cartProduct.collectLatest {
+            cartViewModel.cartProduct.collectLatest {
                 when(it) {
                     is Resource.Success -> {
                         val count = it.data?.size ?: 0
                         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
                         var badge = bottomNavigation.getOrCreateBadge(R.id.cartFragment)
                         if(count > 0) {
+                            badge.isVisible = true
                             badge.apply {
                                 number = count
                                 backgroundColor = resources.getColor(R.color.g_blue)
