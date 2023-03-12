@@ -27,5 +27,9 @@ class ProfileFragment: Fragment(R.layout.fragment_profile) {
         binding.clickToGo.setOnClickListener {
             findNavController().navigate(R.id.action_profileFragment_to_userAccountFragment)
         }
+
+        binding.clickToOrder.setOnClickListener {
+            findNavController().navigate(R.id.action_profileFragment_to_ordersFragment)
+        }
     }
 }

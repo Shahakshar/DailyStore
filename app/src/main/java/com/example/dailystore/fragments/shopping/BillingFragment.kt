@@ -64,6 +64,10 @@ class BillingFragment : Fragment() {
         setUpBillingProductRv()
         setUpAddressRv()
 
+        binding.imgCloseBilling.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
         binding.imgAddAddress.setOnClickListener {
             findNavController().navigate(R.id.action_billingFragment_to_addressFragment)
         }

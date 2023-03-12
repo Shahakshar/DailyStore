@@ -84,6 +84,9 @@ dependencies {
 
     // firebase fireStore
     implementation 'com.google.firebase:firebase-firestore-ktx:24.4.3'
+
+    // stepView
+    implementation 'com.github.shuhart:stepview:1.5.1'
 }
 
 kapt {

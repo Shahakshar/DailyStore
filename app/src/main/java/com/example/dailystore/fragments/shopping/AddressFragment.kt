@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.dailystore.data.Address
 import com.example.dailystore.databinding.FragmentAddressBinding
 import com.example.dailystore.utils.Resource
@@ -72,6 +73,14 @@ class AddressFragment: Fragment() {
                 val address = Address(addressTitle, fullName, street, phone, city, state)
                 viewModel.addAddress(address)
                 clearInput()
+            }
+
+            btnDelete.setOnClickListener {
+                clearInput()
+            }
+
+            imgAddressClose.setOnClickListener {
+                findNavController().navigateUp()
             }
         }
     }
