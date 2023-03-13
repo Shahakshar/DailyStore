@@ -91,5 +91,18 @@
         android:id="@+id/ordersFragment"
         android:name="com.example.dailystore.fragments.settings.AllOrdersFragment"
         android:label="fragment_order"
-        tools:layout="@layout/fragment_order" />
+        tools:layout="@layout/fragment_order" >
+        <action
+            android:id="@+id/action_ordersFragment_to_orderDetails"
+            app:destination="@id/orderDetails" />
+    </fragment>
+    <fragment
+        android:id="@+id/orderDetails"
+        android:name="com.example.dailystore.fragments.settings.OrderDetails"
+        android:label="OrderDetails"
+        tools:layout="@layout/fragment_order_details">
+        <argument
+            android:name="order"
+            app:argType="com.example.dailystore.data.order.Order" />
+    </fragment>
 </navigation>

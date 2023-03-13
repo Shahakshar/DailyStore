@@ -49,5 +49,6 @@ class BillingProductAdapter : RecyclerView.Adapter<BillingProductAdapter.Billing
     override fun onBindViewHolder(holder: BillingProductViewHolder, position: Int) {
         val billingProduct = differ.currentList[position]
         holder.bind(billingProduct)
+
     }
 }

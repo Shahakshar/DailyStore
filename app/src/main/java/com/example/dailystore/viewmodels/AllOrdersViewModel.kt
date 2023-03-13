@@ -25,7 +25,7 @@ class AllOrdersViewModel @Inject constructor(
         getAllOrders()
     }
 
-    private fun getAllOrders() {
+    fun getAllOrders() {
         viewModelScope.launch { _allOrder.emit(Resource.Loading()) }
 
         firestore.collection("user").document(auth.uid!!).collection("orders").get()

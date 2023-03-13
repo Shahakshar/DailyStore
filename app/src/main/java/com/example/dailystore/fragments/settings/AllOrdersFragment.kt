@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.whenCreated
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dailystore.adapter.AllOrderAdapter
@@ -19,9 +20,9 @@ import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
 class AllOrdersFragment: Fragment() {
+
     private lateinit var binding: FragmentOrderBinding
     private val viewModel by viewModels<AllOrdersViewModel>()
-
     private val orderAdapter by lazy { AllOrderAdapter() }
 
     override fun onCreateView(
@@ -41,6 +42,8 @@ class AllOrdersFragment: Fragment() {
         binding.imgCloseOrders.setOnClickListener {
             findNavController().navigateUp()
         }
+
+        // when view created first time then use launch when started
 
         lifecycleScope.launchWhenStarted {
             viewModel.allOrders.collectLatest {
@@ -65,15 +68,58 @@ class AllOrdersFragment: Fragment() {
                     }
                     else -> Unit
                 }
-
             }
         }
+
+        /** when is updated after screen goes on other then
+        * after coming back to screen again we need to update data
+         * */
+
+        lifecycleScope.launchWhenResumed {
+            viewModel.allOrders.collectLatest {
+                when(it) {
+                    is Resource.Loading -> {
+                        binding.progressbarAllOrders.visibility = View.VISIBLE
+                    }
+                    is Resource.Success -> {
+                        binding.progressbarAllOrders.visibility = View.GONE
+                        orderAdapter.differ.submitList(it.data)
+
+                        if(it.data.isNullOrEmpty()) {
+                            binding.tvEmptyOrders.visibility = View.VISIBLE
+                            binding.imgEmptyBox.visibility = View.VISIBLE
+                            binding.imgEmptyBoxTexture.visibility = View.VISIBLE
+
+                        }
+                    }
+                    is Resource.Error -> {
+                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                        binding.progressbarAllOrders.visibility = View.GONE
+                    }
+                    else -> Unit
+                }
+            }
+        }
+
+
+        orderAdapter.onClick = {
+            val action = AllOrdersFragmentDirections.actionOrdersFragmentToOrderDetails(it)
+            findNavController().navigate(action)
+        }
+
     }
 
     private fun setUpOrdersRv() {
         binding.rvAllOrders.apply {
             adapter = orderAdapter
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        lifecycleScope.launchWhenResumed {
+            viewModel.getAllOrders()
         }
     }
 
