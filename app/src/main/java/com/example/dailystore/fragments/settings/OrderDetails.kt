@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dailystore.adapter.BillingProductAdapter
@@ -67,6 +68,10 @@ class OrderDetails @Inject constructor(): Fragment() {
             tvPhoneNumber.text = order.address.Phone
 
             tvTotalprice.text = "₹"+order.totalPrice.toString()
+
+            imgCloseOrder.setOnClickListener {
+                findNavController().navigateUp()
+            }
         }
 
         billingProductAdapter.differ.submitList(order.product)

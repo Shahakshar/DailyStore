@@ -24,6 +24,7 @@ import com.example.dailystore.utils.HorizontalItemDecoration
 import com.example.dailystore.utils.Resource
 import com.example.dailystore.viewmodels.BillingViewModel
 import com.example.dailystore.viewmodels.OrderViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -61,6 +62,7 @@ class BillingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        onHomeClick()
         setUpBillingProductRv()
         setUpAddressRv()
 
@@ -169,5 +171,14 @@ class BillingFragment : Fragment() {
             addItemDecoration(HorizontalItemDecoration())
         }
     }
+
+    private fun onHomeClick() {
+        val btm = activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)
+        btm?.menu?.getItem(0)?.setOnMenuItemClickListener {
+            activity?.onBackPressed()
+            true
+        }
+    }
+
 
 }

@@ -28,6 +28,12 @@
         <action
             android:id="@+id/action_profileFragment_to_ordersFragment"
             app:destination="@id/ordersFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_billingFragment"
+            app:destination="@id/billingFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_orderDetails"
+            app:destination="@id/orderDetails" />
     </fragment>
     <fragment
         android:id="@+id/searchFragment"

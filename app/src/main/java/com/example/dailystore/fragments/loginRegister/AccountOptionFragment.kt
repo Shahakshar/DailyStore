@@ -1,13 +1,20 @@
 package com.example.dailystore.fragments.loginRegister
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.NavGraph
 import androidx.navigation.fragment.findNavController
 import com.example.dailystore.R
+import com.example.dailystore.activities.LoginRegisterActivity
 import com.example.dailystore.databinding.FragmentAccountOptionBinding
+import com.example.dailystore.viewmodels.IntroductionViewModel
 
 class AccountOptionFragment : Fragment(R.layout.fragment_account_option) {
 
@@ -34,4 +41,8 @@ class AccountOptionFragment : Fragment(R.layout.fragment_account_option) {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        if (!findNavController().popBackStack()) findNavController().popBackStack()
+    }
 }

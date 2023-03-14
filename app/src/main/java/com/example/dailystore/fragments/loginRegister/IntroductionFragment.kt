@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -57,5 +58,6 @@ class IntroductionFragment : Fragment(R.layout.fragment_introduction) {
             findNavController().navigate(R.id.action_introductionFragment_to_accountOptionFragment)
         }
     }
+
 
 }

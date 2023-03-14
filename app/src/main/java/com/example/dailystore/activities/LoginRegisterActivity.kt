@@ -2,6 +2,7 @@ package com.example.dailystore.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.navigation.findNavController
 import com.example.dailystore.R
 import dagger.hilt.android.AndroidEntryPoint
 

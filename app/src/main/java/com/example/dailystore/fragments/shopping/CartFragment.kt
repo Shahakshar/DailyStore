@@ -19,6 +19,7 @@ import com.example.dailystore.utils.Resource
 import com.example.dailystore.utils.VerticalItemDecoration
 import com.example.dailystore.utils.showBottomNavigationView
 import com.example.dailystore.viewmodels.CartViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 
@@ -43,6 +44,7 @@ class CartFragment: Fragment(R.layout.fragment_cart) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        onHomeClick()
         setUpCartRv()
 
         cartAdapter.onProductClick = {
@@ -164,4 +166,13 @@ class CartFragment: Fragment(R.layout.fragment_cart) {
         super.onResume()
         showBottomNavigationView()
     }
+
+    private fun onHomeClick() {
+        val btm = activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)
+        btm?.menu?.getItem(0)?.setOnMenuItemClickListener {
+            activity?.onBackPressed()
+            true
+        }
+    }
+
 }
