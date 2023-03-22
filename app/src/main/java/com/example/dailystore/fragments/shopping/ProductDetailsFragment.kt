@@ -65,7 +65,8 @@ class ProductDetailsFragment : Fragment() {
         }
 
         binding.btnAddToCard.setOnClickListener {
-            viewModel.addUpdateProductInCart(
+            showProgress()
+            viewModel.updateProductInCart(
                 CartProduct(
                     product,
                     1,
@@ -83,7 +84,7 @@ class ProductDetailsFragment : Fragment() {
                     }
                     is Resource.Success -> {
                         Toast.makeText(requireContext(), "Successfully added", Toast.LENGTH_SHORT).show()
-                        binding.btnAddToCard.setBackgroundColor(resources.getColor(R.color.black))
+                        hideProgress()
                     }
                     is Resource.Error -> {
                         Toast.makeText(requireContext(), "${it.message}", Toast.LENGTH_SHORT).show()
@@ -92,6 +93,14 @@ class ProductDetailsFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun hideProgress() {
+        binding.progressDetails.visibility = View.GONE
+    }
+
+    private fun showProgress() {
+        binding.progressDetails.visibility = View.VISIBLE
     }
 
     private fun setUpViewPager() {

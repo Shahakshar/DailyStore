@@ -23,6 +23,7 @@ import com.example.dailystore.data.User
 import com.example.dailystore.databinding.FragmentUserAccountBinding
 import com.example.dailystore.dialog.setupBottomSheetDialog
 import com.example.dailystore.utils.Resource
+import com.example.dailystore.utils.hideBottomNavigationView
 import com.example.dailystore.viewmodels.LoginViewModel
 import com.example.dailystore.viewmodels.UserAccountViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -74,6 +75,7 @@ class UserAccountFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        hideBottomNavigationView()
         binding.imgCloseEditProfile.setOnClickListener {
             findNavController().navigateUp()
         }

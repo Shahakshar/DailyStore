@@ -110,6 +110,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
+        <ProgressBar
+            android:id="@+id/progressDetails"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:indeterminateTint="@color/g_black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/btn_add_to_card"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+
         <Button
             android:id="@+id/btn_add_to_card"
             android:layout_width="match_parent"
@@ -122,6 +133,8 @@
             android:layout_marginEnd="10dp"
             android:text="add to cart"
             android:layout_marginBottom="10dp"/>
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

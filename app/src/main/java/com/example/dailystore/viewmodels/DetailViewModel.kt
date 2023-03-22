@@ -22,32 +22,46 @@ class DetailViewModel @Inject constructor(
     private val firebaseCommon: FirebaseCommon
 ) : ViewModel() {
 
+    private val _updateList = MutableStateFlow<Resource<List<CartProduct>>>(Resource.Unspecified())
+    val updateList = _updateList.asStateFlow()
+
     private val _addToCart = MutableStateFlow<Resource<CartProduct>>(Resource.Unspecified())
     val addCart = _addToCart.asStateFlow()
 
-    fun addUpdateProductInCart(cartProduct: CartProduct) {
-        viewModelScope.launch { _addToCart.emit(Resource.Loading()) }
-        firestore.collection("user").document(auth.uid!!).collection("cart")
-            .whereEqualTo("product.id", cartProduct.product.id).get()
-            .addOnSuccessListener {
-                it.documents.let {
-                    if (it.isEmpty()) { // add new product
-                        addNewProduct(cartProduct)
-                    } else {
-                        val product = it.first().toObject(CartProduct::class.java)
+    private var productAvailable = emptyList<DocumentSnapshot>()
 
-                        if (product?.product == cartProduct.product) {
-                            // not increment in product
-                            addNewProduct(cartProduct)
-                        } else { // add new product
-                            addNewProduct(cartProduct)
-                        }
+    init {
+        updateProductList()
+    }
+    private fun updateProductList() {
+        firestore.collection("user").document(auth.uid!!).collection("cart")
+            .addSnapshotListener { value, error ->
+                if(error != null || value == null) {
+                    viewModelScope.launch {
+                        _updateList.emit(Resource.Error(error?.message.toString()))
+                    }
+                } else {
+                    productAvailable = value.documents
+                    val cartProducts = value.toObjects(CartProduct::class.java)
+                    viewModelScope.launch {
+                        _updateList.emit(Resource.Success(cartProducts))
                     }
                 }
             }
-            .addOnFailureListener {
-                viewModelScope.launch { _addToCart.emit(Resource.Error(it.message.toString())) }
-            }
+    }
+
+    fun updateProductInCart(cartProduct: CartProduct) {
+        val index = updateList.value.data?.indexOf(cartProduct)
+
+        // this means that index on which product present if it is not null
+        if(index != null && index != -1) {
+            val documentId = productAvailable[index].id
+            // increment in Quantity
+            increaseQuantity(documentId, cartProduct)
+        } else {
+            // add new product
+            addNewProduct(cartProduct)
+        }
     }
 
     private fun addNewProduct(cartProduct: CartProduct) {

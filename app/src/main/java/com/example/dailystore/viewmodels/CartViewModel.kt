@@ -36,7 +36,7 @@ class CartViewModel @Inject constructor(
     val deleteDialog = _deleteDialog.asSharedFlow()
 
     private fun calculatePrice(data: List<CartProduct>): Float? {
-        return data.sumByDouble { cartProduct ->
+        return data.sumOf { cartProduct ->
             (cartProduct.product.price * cartProduct.quantity).toDouble()
         }.toFloat()
     }

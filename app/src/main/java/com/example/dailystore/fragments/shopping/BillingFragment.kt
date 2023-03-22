@@ -22,6 +22,7 @@ import com.example.dailystore.data.order.OrderStatus
 import com.example.dailystore.databinding.FragmentBillingBinding
 import com.example.dailystore.utils.HorizontalItemDecoration
 import com.example.dailystore.utils.Resource
+import com.example.dailystore.utils.hideBottomNavigationView
 import com.example.dailystore.viewmodels.BillingViewModel
 import com.example.dailystore.viewmodels.OrderViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -62,6 +63,7 @@ class BillingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        hideBottomNavigationView()
         onHomeClick()
         setUpBillingProductRv()
         setUpAddressRv()
@@ -100,9 +102,9 @@ class BillingFragment : Fragment() {
                         Snackbar.make(requireView(), "Loading...", Snackbar.LENGTH_SHORT).show()
                     }
                     is Resource.Success -> {
-                        // order placed then go to the previous fragment
-                       findNavController().navigateUp()
                         Snackbar.make(requireView(), "Your Order Is Placed", Snackbar.LENGTH_LONG).show()
+                        // order placed then go to the previous fragment
+                        findNavController().navigateUp()
                     }
                     is Resource.Error -> {
                         Snackbar.make(requireView(), "${it.message}", Snackbar.LENGTH_SHORT).show()

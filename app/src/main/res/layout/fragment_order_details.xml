@@ -54,7 +54,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            android:visibility="invisible"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/toolbar_all_order_details" />
@@ -180,7 +180,7 @@
             android:id="@+id/linear"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="35dp"
             android:layout_marginBottom="20dp"
             android:background="@drawable/total_box_background"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -220,6 +220,16 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+<!--        <Button-->
+<!--            android:id="@+id/cancelBtn"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="remove it"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="@id/guideline2"-->
+<!--            app:layout_constraintStart_toStartOf="@id/guideline1"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/linear"/>-->
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline1"
