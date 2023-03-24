@@ -1,6 +1,5 @@
 package com.example.dailystore.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dailystore.data.CartProduct
@@ -51,7 +50,22 @@ class DetailViewModel @Inject constructor(
     }
 
     fun updateProductInCart(cartProduct: CartProduct) {
-        val index = updateList.value.data?.indexOf(cartProduct)
+
+        /**
+         * small logic code for increment in quantity in cart if already available
+         */
+        var index = -1
+        var count = 0
+        updateList.value.data.let {
+            it?.forEach {cartProducts->
+               if(cartProducts.product == cartProduct.product) {
+                   index = count
+               } else {
+                   count++
+                   index = -1
+               }
+            }
+        }
 
         // this means that index on which product present if it is not null
         if(index != null && index != -1) {

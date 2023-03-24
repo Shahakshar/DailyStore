@@ -1,5 +1,6 @@
 package com.example.dailystore.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dailystore.data.CartProduct
@@ -84,7 +85,6 @@ class CartViewModel @Inject constructor(
 
         if(index != null && index != -1) {
             val documentId = cartProductDocuments[index].id
-
             when(quantityChanging) {
                 FirebaseCommon.QuantityChanging.INCREASE -> {
                     viewModelScope.launch { _cartProduct.emit(Resource.Loading()) }
