@@ -24,6 +24,7 @@ import com.example.dailystore.utils.showBottomNavigationView
 import com.example.dailystore.viewmodels.HomeCategoryViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class HomeFragment: Fragment(R.layout.fragment_home) {
@@ -85,24 +86,28 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
             }
         }
 
-        lifecycleScope.launchWhenStarted {
+        lifecycleScope.launch {
             viewModel.bestProduct.collectLatest {
                 when(it) {
                     is Resource.Loading -> {
-                        binding.bestProductProgressBar.visibility = View.VISIBLE
+//                        binding.bestProductProgressBar.visibility = View.VISIBLE
                     }
                     is Resource.Error -> {
                         Log.e("TAG", it.message.toString())
                         Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-                        binding.bestProductProgressBar.visibility = View.VISIBLE
+//                        binding.bestProductProgressBar.visibility = View.VISIBLE
                     }
                     is Resource.Success -> {
                         bestProductsAdapter.differ.submitList(it.data)
-                        binding.bestProductProgressBar.visibility = View.GONE
+//                        binding.bestProductProgressBar.visibility = View.GONE
                     }
                     else -> Unit
                 }
             }
+        }
+
+        binding.tvSearch.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_searchFragment)
         }
 
         binding.nestedScrollMainCategory.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, _, scrollY, _, _ ->

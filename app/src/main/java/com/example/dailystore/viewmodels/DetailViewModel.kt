@@ -35,7 +35,7 @@ class DetailViewModel @Inject constructor(
     private fun updateProductList() {
         firestore.collection("user").document(auth.uid!!).collection("cart")
             .addSnapshotListener { value, error ->
-                if(error != null || value == null) {
+                if (error != null || value == null) {
                     viewModelScope.launch {
                         _updateList.emit(Resource.Error(error?.message.toString()))
                     }
@@ -50,7 +50,6 @@ class DetailViewModel @Inject constructor(
     }
 
     fun updateProductInCart(cartProduct: CartProduct) {
-
         /**
          * small logic code for increment in quantity in cart if already available
          */

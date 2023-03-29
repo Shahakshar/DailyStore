@@ -1,5 +1,6 @@
 package com.example.dailystore.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dailystore.data.Product
@@ -22,7 +23,7 @@ class HomeCategoryViewModel @Inject constructor(
     val specialProduct = _specialProduct.asStateFlow()
 
     private val _bestProducts = MutableStateFlow<Resource<List<Product>>>(Resource.Unspecified())
-    val bestProduct: StateFlow<Resource<List<Product>>> = _bestProducts
+    val bestProduct = _bestProducts.asStateFlow()
 
     private val pagingInfo = PagingInfo()
 
