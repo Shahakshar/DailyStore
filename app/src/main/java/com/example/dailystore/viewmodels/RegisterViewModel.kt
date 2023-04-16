@@ -18,41 +18,41 @@ import javax.inject.Inject
 class RegisterViewModel @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val db: FirebaseFirestore
-    ) : ViewModel() {
+) : ViewModel() {
 
-        private val _register = MutableStateFlow<Resource<User>>(Resource.Unspecified())
-        val register : Flow<Resource<User>> = _register
+    private val _register = MutableStateFlow<Resource<User>>(Resource.Unspecified())
+    val register: Flow<Resource<User>> = _register
 
-        private val _validation = Channel<RegisterFieldState>()
-        val validation = _validation.receiveAsFlow()
+    private val _validation = Channel<RegisterFieldState>()
+    val validation = _validation.receiveAsFlow()
 
-        fun crateAccountWithEmailAndPassword(user: User, password: String) {
+    fun crateAccountWithEmailAndPassword(user: User, password: String) {
 
-            if (checkValidation(user, password)) {
+        if (checkValidation(user, password)) {
 
-                runBlocking {
-                    _register.emit(Resource.Loading())
-                }
-                firebaseAuth.createUserWithEmailAndPassword(user.email, password)
-                    .addOnSuccessListener {
-                        it.user?.let { fireUser ->
-                            saveUserInfo(fireUser.uid, user)
-                        }
+            runBlocking {
+                _register.emit(Resource.Loading())
+            }
+            firebaseAuth.createUserWithEmailAndPassword(user.email, password)
+                .addOnSuccessListener {
+                    it.user?.let { fireUser ->
+                        saveUserInfo(fireUser.uid, user)
                     }
-                    .addOnFailureListener {
-                        _register.value = Resource.Error(it.message.toString())
-                    }
-            } else {
-                val registerFieldState = RegisterFieldState(
-                    validateEmail(user.email),
-                    validationPassword(password)
-                )
-
-                runBlocking {
-                    _validation.send(registerFieldState)
                 }
+                .addOnFailureListener {
+                    _register.value = Resource.Error(it.message.toString())
+                }
+        } else {
+            val registerFieldState = RegisterFieldState(
+                validateEmail(user.email),
+                validationPassword(password)
+            )
+
+            runBlocking {
+                _validation.send(registerFieldState)
             }
         }
+    }
 
     private fun saveUserInfo(userUid: String, user: User) {
         db.collection(USER_COLLECTION)
