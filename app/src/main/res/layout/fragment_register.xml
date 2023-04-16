@@ -129,6 +129,7 @@
         android:fontFamily="@font/poppins_light"
         android:gravity="center"
         android:hint="@string/g_password"
+        android:inputType="textPassword"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@id/guideline2"
         app:layout_constraintStart_toStartOf="@id/guideline1"

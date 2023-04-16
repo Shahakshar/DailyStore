@@ -7,13 +7,11 @@ import kotlinx.parcelize.Parcelize
 data class Product(
     val id : String,
     val name: String,
+    val emailIdOfAdmin: String,
     val category: String,
     val price: Float,
-    val offerPercentage: Float? = null,
     val description: String? = null,
-    val colors: List<Int>? = null,
-    val sizes: List<String>? = null,
     val image: List<String>
 ): Parcelable {
-    constructor(): this("0", "", "",0f, image = emptyList())
+    constructor(): this("0", "", "", "",0f, image = emptyList())
 }

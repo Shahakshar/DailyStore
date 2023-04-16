@@ -2,10 +2,11 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <solid android:color="@color/white"/>
-    <stroke android:color="@color/g_icon_tint"
-        android:dashGap="0dp"
-        android:width="@dimen/_2sdp"/>
+    <solid android:color="@color/white" />
+    <stroke
+        android:width="@dimen/_2sdp"
+        android:color="@color/g_icon_tint"
+        android:dashGap="0dp" />
 
 
 </shape>

@@ -52,6 +52,7 @@ class ProductDetailsFragment : Fragment() {
             tvProductName.text = product.name
             tvProductPrice.text = "₹${product.price}"
             productDescription.text = product.description
+            tvActualEmail.text = product.emailIdOfAdmin
         }
 
         viewPagerAdapter.differ.submitList(product.image)
